@@ -1,4 +1,7 @@
 api_platform:
+    serializer:
+            default_context:
+                hydra_prefix: true
     title: Hello API Platform
     version: 1.0.0
     formats:
