@@ -1,190 +1,53 @@
-// src/components/Produits.js
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setProduits, setCategories, setLoading, setError } from '../redux/slice';
-import api from '../axios';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const Produits = () => {
-  const dispatch = useDispatch();
-  const produits = useSelector((state) => state.api.produits);
-  const categories = useSelector((state) => state.api.categories);
-  const loading = useSelector((state) => state.api.loading);
-  const error = useSelector((state) => state.api.error);
+  // États pour gérer les produits, le chargement et les erreurs
+  const [produits, setProduits] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const [newProduit, setNewProduit] = useState({
-    nom: '',
-    description: '',
-    prix: '',
-    categorie: '',
-  });
-
-  const [isEditing, setIsEditing] = useState(false);
-
+  // Utilisation de useEffect pour effectuer la requête API
   useEffect(() => {
-    const fetchProduits = async () => {
-      dispatch(setLoading(true));
-      try {
-        const response = await api.get('produits');
-        dispatch(setProduits(response.data['hydra:member']));
-      } catch (err) {
-        dispatch(setError(err.message));
-      } finally {
-        dispatch(setLoading(false));
-      }
-    };
-
-    const fetchCategories = async () => {
-      try {
-        const response = await api.get('categories');
-        dispatch(setCategories(response.data['hydra:member']));
-      } catch (err) {
-        dispatch(setError(err.message));
-      }
-    };
-
-    fetchProduits();
-    fetchCategories();
-  }, [dispatch]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    dispatch(setLoading(true));
-    try {
-      const response = await api.post('produits', {
-        ...newProduit,
-        categorie: `/api/categories/${newProduit.categorie}`,
+    axios
+      .get('http://127.0.0.1:8000/api/produits') // URL de votre API Symfony
+      .then((response) => {
+        console.log('Données reçues :', response.data); // Vérifiez les données ici
+        setProduits(response.data); // Stockez les données dans l'état
+        setLoading(false); // Arrêtez le chargement
+      })
+      .catch((err) => {
+        console.error('Erreur lors de la récupération des produits:', err);
+        setError('Erreur lors de la récupération des produits.');
+        setLoading(false); // Arrêtez le chargement même en cas d'erreur
       });
-      dispatch(setProduits([response.data, ...produits]));
-      setNewProduit({ nom: '', description: '', prix: '', categorie: '' });
-    } catch (err) {
-      dispatch(setError(err.message));
-    } finally {
-      dispatch(setLoading(false));
-    }
-  };
+  }, []); // Le tableau vide [] signifie que cette fonction s'exécutera une seule fois au montage
 
-  const handleEdit = (produit) => {
-    setNewProduit({
-      id: produit.id,
-      nom: produit.nom,
-      description: produit.description,
-      prix: produit.prix,
-      categorie: produit.categorie.id,
-    });
-    setIsEditing(true);
-  };
+  // Gestion des différents états (chargement, erreur, affichage des produits)
+  if (loading) return <div>Chargement...</div>;
+  if (error) return <div>{error}</div>;
 
-  const handleUpdate = async (e) => {
-    e.preventDefault();
-    dispatch(setLoading(true));
-    try {
-      const response = await api.put(`produits/${newProduit.id}`, {
-        ...newProduit,
-        categorie: `/api/categories/${newProduit.categorie}`,
-      });
-      const updatedProduits = produits.map((produit) =>
-        produit.id === response.data.id ? response.data : produit
-      );
-      dispatch(setProduits(updatedProduits));
-      setNewProduit({ nom: '', description: '', prix: '', categorie: '' });
-      setIsEditing(false);
-    } catch (err) {
-      dispatch(setError(err.message));
-    } finally {
-      dispatch(setLoading(false));
-    }
-  };
-
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');
-    if (!confirmDelete) return;
-
-    dispatch(setLoading(true));
-    try {
-      await api.delete(`produits/${id}`);
-      dispatch(setProduits(produits.filter((produit) => produit.id !== id)));
-    } catch (err) {
-      dispatch(setError(err.message));
-    } finally {
-      dispatch(setLoading(false));
-    }
-  };
-
+  // Affichage de la liste des produits dans un tableau
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-semibold mb-4">{isEditing ? 'Modifier le Produit' : 'Ajouter un Produit'}</h2>
-      <form onSubmit={isEditing ? handleUpdate : handleSubmit} className="space-y-4">
-        <input
-          type="text"
-          placeholder="Nom"
-          value={newProduit.nom}
-          onChange={(e) => setNewProduit({ ...newProduit, nom: e.target.value })}
-          className="input input-bordered w-full"
-          required
-        />
-        <input
-          type="text"
-          placeholder="Description"
-          value={newProduit.description}
-          onChange={(e) => setNewProduit({ ...newProduit, description: e.target.value })}
-          className="input input-bordered w-full"
-          required
-        />
-        <input
-          type="number"
-          placeholder="Prix"
-          value={newProduit.prix}
-          onChange={(e) => setNewProduit({ ...newProduit, prix: e.target.value })}
-          className="input input-bordered w-full"
-          required
-        />
-        <select
-          value={newProduit.categorie}
-          onChange={(e) => setNewProduit({ ...newProduit, categorie: e.target.value })}
-          className="select select-bordered w-full"
-          required
-        >
-          <option value="">Sélectionner une catégorie</option>
-          {categories.map((categorie) => (
-            <option key={categorie.id} value={categorie.id}>
-              {categorie.nom}
-            </option>
-          ))}
-        </select>
-        <button type="submit" className="btn btn-primary">
-          {isEditing ? 'Mettre à jour' : 'Ajouter'}
-        </button>
-      </form>
-
-      <h2 className="text-2xl font-semibold mt-8 mb-4">Liste des Produits</h2>
-      {loading && <p>Chargement...</p>}
-      {error && <p className="text-red-500">{error}</p>}
-      <table className="table-auto w-full">
+    <div>
+      <h1>Liste des Produits</h1>
+      <table>
         <thead>
           <tr>
             <th>Nom</th>
             <th>Description</th>
             <th>Prix</th>
-            <th>Catégorie</th>
-            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {produits.map((produit) => (
-            <tr key={produit.id}>
-              <td>{produit.nom}</td>
-              <td>{produit.description}</td>
-              <td>{produit.prix}</td>
-              <td>{produit.categorie.nom}</td>
-              <td>
-                <button onClick={() => handleEdit(produit)} className="btn btn-warning">
-                  Modifier
-                </button>
-                <button onClick={() => handleDelete(produit.id)} className="btn btn-danger">
-                  Supprimer
-                </button>
-              </td>
-            </tr>
+          {produits.map((produit, index) => (
+            produit && ( // Vérification que le produit est bien défini
+              <tr key={index}>
+                <td>{produit.nom || 'Nom non disponible'}</td>
+                <td>{produit.description || 'Description non disponible'}</td>
+                <td>{produit.prix || 'Prix non disponible'}</td>
+              </tr>
+            )
           ))}
         </tbody>
       </table>
