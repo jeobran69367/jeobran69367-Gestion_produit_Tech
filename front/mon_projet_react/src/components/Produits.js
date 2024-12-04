@@ -19,7 +19,6 @@ const Produits = () => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [message, setMessage] = useState('');
-  const [loadingCategories, setLoadingCategories] = useState(false);
 
   // Récupération des produits et des catégories
   useEffect(() => {
@@ -36,14 +35,14 @@ const Produits = () => {
     };
 
     const fetchCategories = async () => {
-      setLoadingCategories(true);
+      dispatch(setLoading(true));
       try {
         const response = await api.get('categories');
         dispatch(setCategories(response.data['hydra:member'] || []));
       } catch (err) {
         dispatch(setError(err.message));
       } finally {
-        setLoadingCategories(false);
+        dispatch(setLoading(false));
       }
     };
 
@@ -58,7 +57,7 @@ const Produits = () => {
     try {
       const response = await api.post('produits', {
         ...newProduit,
-        prix: parseFloat(newProduit.prix), // Conversion ici
+        prix: parseFloat(newProduit.prix),
         categorie: `/api/categories/${newProduit.categorie}`,
       });
       dispatch(setProduits([response.data, ...produits]));
@@ -137,7 +136,6 @@ const Produits = () => {
       {error && <p className="message error">{error}</p>}
 
       <form onSubmit={isEditing ? handleUpdate : handleSubmit}>
-        <h2>{isEditing ? 'Modifier le Produit' : 'Ajouter un Nouveau Produit'}</h2>
         <input
           type="text"
           placeholder="Nom"
@@ -175,24 +173,13 @@ const Produits = () => {
             </option>
           ))}
         </select>
-        <button
-          type="submit"
-          className="btn"
-          disabled={
-            !newProduit.nom ||
-            !newProduit.description ||
-            !newProduit.prix ||
-            !newProduit.categorie ||
-            parseFloat(newProduit.prix) <= 0
-          }
-        >
+        <button type="submit" className="btn">
           {isEditing ? 'Mettre à jour' : 'Ajouter'}
         </button>
       </form>
 
       <h2 className="text-2xl font-semibold mt-8 mb-4">Liste des Produits</h2>
       {loading && <p>Chargement...</p>}
-      {loadingCategories && <p>Chargement des catégories...</p>}
       <table>
         <thead>
           <tr>
@@ -204,16 +191,11 @@ const Produits = () => {
           </tr>
         </thead>
         <tbody>
-          {produits.length === 0 && !loading && (
-            <tr>
-              <td colSpan="5" className="text-center">Aucun produit trouvé.</td>
-            </tr>
-          )}
           {produits.map((produit) => (
             <tr key={produit.id}>
-              <td>{produit.nom || 'Nom indisponible'}</td>
-              <td>{produit.description || 'Description indisponible'}</td>
-              <td>{produit.prix || 'Prix indisponible'}</td>
+              <td>{produit.nom}</td>
+              <td>{produit.description}</td>
+              <td>{produit.prix}</td>
               <td>{produit.categorie?.nom || 'Catégorie indisponible'}</td>
               <td>
                 <button onClick={() => handleEdit(produit)} className="btn btn-warning">

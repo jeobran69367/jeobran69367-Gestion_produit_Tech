@@ -32,6 +32,8 @@ when@test:
 when@prod:
     doctrine:
         orm:
+            ontroller_resolver:
+                auto_mapping: true
             auto_generate_proxy_classes: false
             proxy_dir: '%kernel.build_dir%/doctrine/orm/Proxies'
             query_cache_driver:
