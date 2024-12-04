@@ -1,0 +1,139 @@
+/* Couleurs principales */
+:root {
+    --blue: #007bff; /* Bleu principal */
+    --red: #ff4136; /* Rouge principal */
+    --white: #ffffff; /* Blanc */
+    --gray-light: #f8f9fa; /* Fond clair */
+    --gray-dark: #343a40; /* Texte sombre */
+    --gray-border: #ced4da; /* Bordures légères */
+    --shadow: rgba(0, 0, 0, 0.1); /* Ombres */
+  }
+  
+  /* Global Styles */
+  body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--gray-light);
+    color: var(--gray-dark);
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  /* Formulaire */
+  form {
+    background: var(--white);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px var(--shadow);
+    margin-bottom: 30px;
+  }
+  
+  form h2 {
+    color: var(--blue);
+    margin-bottom: 10px;
+  }
+  
+  form .input,
+  form .select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--gray-border);
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-size: 1rem;
+  }
+  
+  form .btn {
+    display: inline-block;
+    background: var(--blue);
+    color: var(--white);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  form .btn:hover {
+    background: var(--red);
+  }
+  
+  /* Table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background: var(--white);
+    box-shadow: 0 4px 6px var(--shadow);
+  }
+  
+  table th,
+  table td {
+    text-align: left;
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--gray-border);
+  }
+  
+  table th {
+    background: var(--blue);
+    color: var(--white);
+    text-transform: uppercase;
+    font-size: 0.9rem;
+  }
+  
+  table tbody tr:hover {
+    background: var(--gray-light);
+  }
+  
+  table .btn {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+  }
+  
+  table .btn-warning {
+    background: var(--blue);
+    color: var(--white);
+  }
+  
+  table .btn-warning:hover {
+    background: var(--red);
+  }
+  
+  table .btn-danger {
+    background: var(--red);
+    color: var(--white);
+  }
+  
+  table .btn-danger:hover {
+    background: var(--blue);
+  }
+  
+  /* Messages */
+  .message {
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+  
+  .message.success {
+    background: rgba(0, 123, 255, 0.1);
+    color: var(--blue);
+    border: 1px solid var(--blue);
+  }
+  
+  .message.error {
+    background: rgba(255, 65, 54, 0.1);
+    color: var(--red);
+    border: 1px solid var(--red);
+  }
+  

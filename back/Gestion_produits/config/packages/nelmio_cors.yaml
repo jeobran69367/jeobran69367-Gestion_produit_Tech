@@ -1,9 +1,14 @@
 nelmio_cors:
     defaults:
-        allow_credentials: true
-        allow_origin: ['http://localhost:3000']   # Autoriser React à accéder à l'API
-        allow_headers: ['Content-Type', 'Authorization', 'Accept']
-        allow_methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS']
+        allow_origin: ['http://localhost:3000'] # Frontend React en HTTP et HTTPS
+        allow_methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'] # Méthodes autorisées
+        allow_headers: ['Content-Type', 'Authorization'] # En-têtes autorisés
+        expose_headers: ['Authorization'] # En-têtes exposés au client
+        max_age: 3600 # Temps de mise en cache
+        allow_credentials: true # Permettre l'envoi de cookies ou de credentials
     paths:
-        '^/api/':  # Cela permet de définir les règles CORS uniquement pour les routes API
+        '^/api/':
             allow_origin: ['http://localhost:3000']
+            allow_methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+            allow_headers: ['Content-Type', 'Authorization']
+            expose_headers: ['Authorization']

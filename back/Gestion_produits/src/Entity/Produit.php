@@ -28,7 +28,11 @@ class Produit
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $datecreation = null;
 
-    #[ORM\Column(length: 255)]
+    public function __construct()
+    {
+        // Initialise la date de création avec la date et l'heure actuelles
+        $this->datecreation = new \DateTime();
+    }
 
     public function getId(): ?int
     {
