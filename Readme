@@ -1,32 +1,25 @@
-Gestion Produits - Documentation
-Ce projet est une application web complète pour gérer des produits et catégories, incluant un backend Symfony et un frontend React. Ce fichier explique comment installer et lancer le projet.
+✨ Gestion Produits - Documentation ✨
+Bienvenue dans Gestion Produits, une application web complète pour gérer des produits et leurs catégories. Ce projet inclut un backend Symfony et un frontend React. Suivez cette documentation pour installer, configurer, et lancer le projet.
 
-Table des matières
-Prérequis
-Installation Backend
-Installation Frontend
-Utilisation
-Tests
-API Documentation
-Déploiement
+📚 Table des Matières
+✅ Prérequis
+⚙️ Installation Backend
+🖥️ Installation Frontend
+🚀 Utilisation
+🧪 Tests
+📖 API Documentation
+🌍 Déploiement
+✅ Prérequis
+Avant de commencer, assurez-vous que les outils suivants sont installés sur votre machine :
 
-
------------------------------------------------ 
-
-Prérequis
-Assurez-vous d'avoir les outils suivants installés sur votre machine :
-
-PHP >= 8.1
-Composer
-Node.js >= 14 et npm ou yarn
-Symfony CLI
-MySQL ou tout autre serveur de base de données compatible avec Doctrine
+PHP >= 8.1 🐘
+Composer 📦
+Node.js >= 14 et npm ou Yarn 🌐
+Symfony CLI ⚡
+MySQL ou tout autre serveur de base de données compatible avec Doctrine 🗄️
 
 
-------------------------------------------------------
-
-Installation Backend
-
+⚙️ Installation Backend
 Étape 1 : Cloner le dépôt
 git clone https://github.com/votre-utilisateur/gestion-produits.git
 cd gestion-produits/back
@@ -37,8 +30,8 @@ composer install
 Étape 3 : Configurer l'environnement
 Créez un fichier .env.local et configurez votre base de données :
 cp .env .env.local
-Modifiez la ligne suivante pour y mettre vos informations :
-makefile
+Modifiez cette ligne avec vos informations :
+dotenv
 DATABASE_URL="mysql://user:password@127.0.0.1:3306/gestion_produits"
 
 Étape 4 : Créer et migrer la base de données
@@ -47,13 +40,12 @@ symfony console doctrine:migrations:migrate
 
 Étape 5 : Lancer le serveur de développement
 symfony server:start --no-tls
-Votre backend est maintenant disponible sur http://127.0.0.1:8000.
+
+✨ Votre backend est disponible sur http://127.0.0.1:8000.
 
 
-----------------------------------------------------------------
 
-Installation Frontend
-
+🖥️ Installation Frontend
 Étape 1 : Naviguer dans le dossier frontend
 cd ../front
 
@@ -63,22 +55,41 @@ ou avec Yarn :
 yarn install
 
 Étape 3 : Configurer l'environnement
-Créez un fichier .env.local dans le dossier front pour configurer l'URL de l'API :
-arduino
+Créez un fichier .env.local dans le dossier front avec l'URL de l'API :
+dotenv
 REACT_APP_API_URL=http://127.0.0.1:8000
 
 Étape 4 : Lancer le serveur de développement
 npm start
 ou avec Yarn :
 yarn start
-Votre frontend sera disponible sur http://localhost:3000.
+🚀 Votre frontend est disponible sur http://localhost:3000.
 
 
-------------------------------------------------------------------
 
-Utilisation
+🚀 Utilisation
 Backend
-Accédez à l'API sur http://127.0.0.1:8000/api.
-La documentation de l'API (Swagger) est disponible sur http://127.0.0.1:8000/api/docs.
+Accédez à l'API : http://127.0.0.1:8000/api
+Documentation de l'API (Swagger) : http://127.0.0.1:8000/api/docs
+
 Frontend
-Accédez à l'interface utilisateur sur http://localhost:3000.
+Accédez à l'interface utilisateur : http://localhost:3000
+
+
+
+🧪 Tests
+Backend
+Pour exécuter les tests unitaires ou fonctionnels :
+php bin/phpunit
+
+Frontend
+Pour lancer les tests React :
+npm test
+ou avec Yarn :
+yarn test
+
+
+
+📖 API Documentation
+La documentation Swagger de l'API est disponible ici :
+➡️ http://127.0.0.1:8000/api/docs
