@@ -20,6 +20,57 @@ const Produits = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [message, setMessage] = useState('');
 
+   // Nouveaux états pour la recherche
+   const [searchTerm, setSearchTerm] = useState('');
+   const [searchFilter, setSearchFilter] = useState('nom');
+   const [filteredProduits, setFilteredProduits] = useState(produits);
+ 
+   // Récupération des produits et des catégories
+   useEffect(() => {
+     const fetchProduits = async () => {
+       dispatch(setLoading(true));
+       try {
+         const response = await api.get('produits');
+         dispatch(setProduits(response.data['hydra:member'] || []));
+         setFilteredProduits(response.data['hydra:member'] || []); // Initialisation des produits filtrés
+       } catch (err) {
+         dispatch(setError(err.message));
+       } finally {
+         dispatch(setLoading(false));
+       }
+     };
+ 
+     const fetchCategories = async () => {
+       dispatch(setLoading(true));
+       try {
+         const response = await api.get('categories');
+         dispatch(setCategories(response.data['hydra:member'] || []));
+       } catch (err) {
+         dispatch(setError(err.message));
+       } finally {
+         dispatch(setLoading(false));
+       }
+     };
+ 
+     fetchProduits();
+     fetchCategories();
+   }, [dispatch]);
+ 
+   // Fonction de recherche
+   const handleSearch = () => {
+     if (searchTerm.trim() === '') {
+       setFilteredProduits(produits); // Aucun filtre si le terme est vide
+     } else {
+       const lowercasedTerm = searchTerm.toLowerCase();
+       const filtered = produits.filter((produit) =>
+         searchFilter === 'nom'
+           ? produit.nom.toLowerCase().includes(lowercasedTerm)
+           : produit.prix.toString().includes(lowercasedTerm)
+       );
+       setFilteredProduits(filtered);
+     }
+   };
+
   // Récupération des produits et des catégories
   useEffect(() => {
     const fetchProduits = async () => {
@@ -64,13 +115,7 @@ const Produits = () => {
       setNewProduit({ nom: '', description: '', prix: '', categorie: '' });
       setMessage('Produit ajouté avec succès !');
     } catch (err) {
-      if (err.response?.data?.violations) {
-        const violations = err.response.data.violations.map((v) => v.message).join(', ');
-        dispatch(setError(`Erreur lors de la création du produit : ${violations}`));
-      } else {
-        dispatch(setError(err.response?.data?.detail || 'Erreur inconnue'));
-      }
-      console.error('Erreur lors de la création du produit :', err.response?.data);
+      dispatch(setError(err.response?.data?.detail || 'Erreur inconnue'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -135,6 +180,29 @@ const Produits = () => {
       {message && <p className="message success">{message}</p>}
       {error && <p className="message error">{error}</p>}
 
+      {/* Barre de recherche */}
+      <div className="search-container">
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Rechercher un produit..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <select
+          className="search-filter"
+          value={searchFilter}
+          onChange={(e) => setSearchFilter(e.target.value)}
+        >
+          <option value="nom">Nom</option>
+          <option value="prix">Prix</option>
+        </select>
+        <button className="search-button" onClick={handleSearch}>
+          Rechercher
+        </button>
+      </div>
+
+
       <form onSubmit={isEditing ? handleUpdate : handleSubmit}>
         <input
           type="text"
@@ -191,7 +259,7 @@ const Produits = () => {
           </tr>
         </thead>
         <tbody>
-          {produits.map((produit) => (
+          {filteredProduits.map((produit) => (
             <tr key={produit.id}>
               <td>{produit.nom}</td>
               <td>{produit.description}</td>
