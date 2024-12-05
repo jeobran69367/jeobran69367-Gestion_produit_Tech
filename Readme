@@ -1,0 +1,84 @@
+Gestion Produits - Documentation
+Ce projet est une application web complète pour gérer des produits et catégories, incluant un backend Symfony et un frontend React. Ce fichier explique comment installer et lancer le projet.
+
+Table des matières
+Prérequis
+Installation Backend
+Installation Frontend
+Utilisation
+Tests
+API Documentation
+Déploiement
+
+
+----------------------------------------------- 
+
+Prérequis
+Assurez-vous d'avoir les outils suivants installés sur votre machine :
+
+PHP >= 8.1
+Composer
+Node.js >= 14 et npm ou yarn
+Symfony CLI
+MySQL ou tout autre serveur de base de données compatible avec Doctrine
+
+
+------------------------------------------------------
+
+Installation Backend
+
+Étape 1 : Cloner le dépôt
+git clone https://github.com/votre-utilisateur/gestion-produits.git
+cd gestion-produits/back
+
+Étape 2 : Installer les dépendances PHP
+composer install
+
+Étape 3 : Configurer l'environnement
+Créez un fichier .env.local et configurez votre base de données :
+cp .env .env.local
+Modifiez la ligne suivante pour y mettre vos informations :
+makefile
+DATABASE_URL="mysql://user:password@127.0.0.1:3306/gestion_produits"
+
+Étape 4 : Créer et migrer la base de données
+symfony console doctrine:database:create
+symfony console doctrine:migrations:migrate
+
+Étape 5 : Lancer le serveur de développement
+symfony server:start --no-tls
+Votre backend est maintenant disponible sur http://127.0.0.1:8000.
+
+
+----------------------------------------------------------------
+
+Installation Frontend
+
+Étape 1 : Naviguer dans le dossier frontend
+cd ../front
+
+Étape 2 : Installer les dépendances JavaScript
+npm install
+ou avec Yarn :
+yarn install
+
+Étape 3 : Configurer l'environnement
+Créez un fichier .env.local dans le dossier front pour configurer l'URL de l'API :
+arduino
+REACT_APP_API_URL=http://127.0.0.1:8000
+
+Étape 4 : Lancer le serveur de développement
+npm start
+ou avec Yarn :
+yarn start
+Votre frontend sera disponible sur http://localhost:3000.
+
+
+------------------------------------------------------------------
+
+Utilisation
+Backend
+Accédez à l'API sur http://127.0.0.1:8000/api.
+La documentation de l'API (Swagger) est disponible sur http://127.0.0.1:8000/api/docs.
+Frontend
+Accédez à l'interface utilisateur sur http://localhost:3000.
