@@ -31,8 +31,9 @@ const Produits = () => {
        dispatch(setLoading(true));
        try {
          const response = await api.get('produits');
-         dispatch(setProduits(response.data['hydra:member'] || []));
-         setFilteredProduits(response.data['hydra:member'] || []); // Initialisation des produits filtrés
+         const productsData = response.data['hydra:member'] || [];
+         dispatch(setProduits(productsData));
+         setFilteredProduits(productsData); // Initialisation des produits filtrés
        } catch (err) {
          dispatch(setError(err.message));
        } finally {
@@ -71,35 +72,7 @@ const Produits = () => {
      }
    };
 
-  // Récupération des produits et des catégories
-  useEffect(() => {
-    const fetchProduits = async () => {
-      dispatch(setLoading(true));
-      try {
-        const response = await api.get('produits');
-        dispatch(setProduits(response.data['hydra:member'] || []));
-      } catch (err) {
-        dispatch(setError(err.message));
-      } finally {
-        dispatch(setLoading(false));
-      }
-    };
 
-    const fetchCategories = async () => {
-      dispatch(setLoading(true));
-      try {
-        const response = await api.get('categories');
-        dispatch(setCategories(response.data['hydra:member'] || []));
-      } catch (err) {
-        dispatch(setError(err.message));
-      } finally {
-        dispatch(setLoading(false));
-      }
-    };
-
-    fetchProduits();
-    fetchCategories();
-  }, [dispatch]);
 
   // Ajout d'un produit
   const handleSubmit = async (e) => {
@@ -111,7 +84,9 @@ const Produits = () => {
         prix: parseFloat(newProduit.prix),
         categorie: `/api/categories/${newProduit.categorie}`,
       });
-      dispatch(setProduits([response.data, ...produits]));
+      const updatedProduits = [response.data, ...produits];
+      dispatch(setProduits(updatedProduits));
+      setFilteredProduits(updatedProduits); // Keep filtered products in sync
       setNewProduit({ nom: '', description: '', prix: '', categorie: '' });
       setMessage('Produit ajouté avec succès !');
     } catch (err) {
@@ -147,6 +122,7 @@ const Produits = () => {
         produit.id === response.data.id ? response.data : produit
       );
       dispatch(setProduits(updatedProduits));
+      setFilteredProduits(updatedProduits); // Keep filtered products in sync
       setNewProduit({ nom: '', description: '', prix: '', categorie: '' });
       setIsEditing(false);
       setMessage('Produit mis à jour avec succès !');
@@ -165,7 +141,9 @@ const Produits = () => {
     dispatch(setLoading(true));
     try {
       await api.delete(`produits/${id}`);
-      dispatch(setProduits(produits.filter((produit) => produit.id !== id)));
+      const updatedProduits = produits.filter((produit) => produit.id !== id);
+      dispatch(setProduits(updatedProduits));
+      setFilteredProduits(updatedProduits); // Keep filtered products in sync
       setMessage('Produit supprimé avec succès !');
     } catch (err) {
       dispatch(setError(err.message));
